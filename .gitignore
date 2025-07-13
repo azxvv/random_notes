@@ -1,0 +1,47 @@
+# C/C++ 编译产物
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.pdb
+*.ilk
+
+# 预编译头文件
+*.pch
+*.gch
+
+# 自动生成的依赖文件
+*.d
+
+# XMake 相关文件
+.xmake/
+build/
+xmake.lua.local
+xmake-repo/
+.pkg/
+
+# 调试信息
+.vscode/
+*.su
+*.idb
+*.aps
+*.ncb
+*.opt
+*.plg
+
+# 日志文件
+*.log
+
+# 临时文件
+*~
+
+# 备份文件
+*.bak
+*.swp
+
+# 可执行的目标文件
+iniutil
