@@ -3,7 +3,7 @@
 
 int main()
 {
-    INIReader reader("/home/user/random_notes/config/test.ini");
+    INIReader reader("/home/su/random_notes/config/test.ini");
 
     if (reader.ParseError() < 0) 
     {
