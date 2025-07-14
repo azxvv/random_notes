@@ -45,3 +45,6 @@ xmake-repo/
 
 # 可执行的目标文件
 iniutil
+
+# 忽略可执行的目标文件
+/bin/
