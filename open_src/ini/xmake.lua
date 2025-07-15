@@ -1,0 +1,5 @@
+target("ini")
+    set_kind("shared")
+    add_files("ini.c", "INIReader.cpp")
+    add_includedirs("../../include")
+    add_cxflags("-g")
