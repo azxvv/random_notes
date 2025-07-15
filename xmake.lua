@@ -27,4 +27,4 @@ end
 
 add_includedirs("include")
 includes("src/ini")
-includes("example")
+includes("example/inih")
