@@ -6,6 +6,41 @@ Currently, the main focus is on updating
 - Open source library
 - C++ syntax
 
+
+# build
+
+This project is maintained using xmake.
+The basic usage of xmake can be found in the xmake.md documentation.
+
+```shell
+cd random_notes
+
+xmake f -c  # clean
+
+xmake   # Build all by default
+
+xmake -b ini    # Only build inih
+
+xmake -b [target]   # Build your declared goals
+
+# This is a command I commonly use to build the specified target and display detailed compilation information (v), 
+# and it is the complete build of the specified target (a)
+xmake -avb  [target]    
+
+# Switching the xmake rule allows debugging using GDB
+xmake f -m debug
+
+# Run the specified target program
+xmake run [target]
+
+# Debug the specified target program
+xmake run -d [target]
+```
+
+# docs directory
+
+- ini.md: Ini.md: Translated the REAMDE.md of the open source library inih
+
 # Open source library
 I will learn by adding comments to the open-source libraries I am currently studying, incorporating test programs, and using xmake for project management
 
@@ -23,3 +58,4 @@ CMockery is a lightweight unit testing and mock framework designed specifically 
 # miniz 
 
 Miniz is a lightweight, high-performance compression and decompression library that focuses on providing zlib compatible features while also being small in size and easy to integrate. It is widely used in scenarios that require efficient processing of DEFLATE compression algorithms (commonly used in formats such as ZIP, PNG, gzip, etc.), especially suitable for embedded systems, game development, or lightweight applications that have strict requirements for library size and memory usage.
+
