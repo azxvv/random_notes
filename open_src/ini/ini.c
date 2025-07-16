@@ -204,6 +204,8 @@ int ini_parse_stream(ini_reader reader, void* stream, ini_handler handler,
 #if INI_ALLOW_MULTILINE
         else if (*prev_name && *start && start > line) 
         {
+            // 若上一行解析的键为prev_name且当前行以空白开头，则将当前行内容追加到上一行的值。
+            // 如果start指针与原line指针不同，则说明行首存在空白字符
 #if INI_ALLOW_INLINE_COMMENTS
             end = ini_find_chars_or_comment(start, NULL);
             if (*end)
