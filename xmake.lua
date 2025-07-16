@@ -26,5 +26,7 @@ elseif is_mode("release") then
 end
 
 add_includedirs("include")
+includes("src/cmockery")
 includes("src/ini")
 includes("example/inih")
+includes("example/cmockery")
