@@ -27,8 +27,9 @@ end
 
 add_includedirs("include")
 
-includes("src/cmockery")
+-- includes("src/cmockery")
 includes("example/inih")
 includes("example/cmockery")
-includes("src/ini")
+-- includes("src/ini")
 includes("open_src/ini")
+includes("open_src/cmockery")
