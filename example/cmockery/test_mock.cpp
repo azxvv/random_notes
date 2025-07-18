@@ -15,23 +15,27 @@ extern "C" {
 int db_query(const char* sql, void** result);
 
 // 被测试函数
-int get_user_age(const char* username) {
+int get_user_age(const char* username) 
+{
     char sql[100];
     void* result;
     sprintf(sql, "SELECT age FROM users WHERE name='%s'", username);
     if (db_query(sql, &result) != 0) return -1;
+
     return *(int*)result;
 }
 
 // 模拟 db_query 函数（C/C++ 兼容）
-int db_query(const char* sql, void** result) {
+int db_query(const char* sql, void** result) 
+{
     check_expected(sql);               // 验证输入参数
     *result = mock_ptr();              // 显式获取指针类型返回值
     return mock_int();                 // 显式获取 int 类型返回值
 }
 
 // 测试用例
-void test_get_user_age_success(void** state) {
+void test_get_user_age_success(void** state) 
+{
     int expected_age = 30;
     const char* expected_sql = "SELECT age FROM users WHERE name='Alice'";
     
@@ -43,10 +47,12 @@ void test_get_user_age_success(void** state) {
 }
 
 // 测试套件
-const UnitTest tests[] = {
+const UnitTest tests[] = 
+{
     unit_test(test_get_user_age_success)
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
     return run_tests(tests);
 }
