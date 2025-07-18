@@ -1,0 +1,5 @@
+target("cmockery")
+    set_kind("shared")
+    add_files("cmockery.c")
+    add_includedirs("../../include")
+    add_cxflags("-g")
