@@ -1112,3 +1112,67 @@ void vprint_error(const char* const format, va_list args);
  * @example mock_ptr_as(char*)  // 转换为字符指针
  */
 #define mock_ptr_as(type) ((type)mock())
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------------------- 自定义断言扩展 ----------------------------------//
+////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief 自定义浮点比较（替代 assert_double_equal）
+ * @param expected 预期值
+ * @param actual 实际值
+ * @param epsilon 允许的误差范围
+ * @note 使用 assert_true 实现，若差值超过 epsilon 则断言失败
+ */
+void assert_floats_equal(double expected, double actual, double epsilon) 
+{
+    assert_true(fabs(expected - actual) < epsilon);
+}
+
+/**
+ * @brief 自定义断言失败处理函数
+ * @param file 文件名
+ * @param line 行号
+ * @param func 函数名
+ * @param format 错误信息格式
+ * @param ... 可变参数
+ * @note 输出详细的断言失败信息并终止程序
+ */
+void custom_assert_failed(const char *file, int line, const char *func, const char *format, ...) {
+    fprintf(stderr, "Assertion failed: %s:%d: %s: ", file, line, func);
+    
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    
+    fprintf(stderr, "\n");
+    exit(EXIT_FAILURE);
+}
+
+/**
+ * @brief 断言指针为 NULL
+ * @param pointer 待检查的指针
+ * @note 若指针不为 NULL 则调用 custom_assert_failed 输出错误信息
+ */
+#define assert_null(pointer) \
+    do { \
+        if ((pointer) != NULL) { \
+            custom_assert_failed(__FILE__, __LINE__, __func__, \
+                "expected NULL pointer, but got %p", (void *)(pointer)); \
+        } \
+    } while (0)
+
+/**
+ * @brief 断言指针不为 NULL
+ * @param pointer 待检查的指针
+ * @note 若指针为 NULL 则调用 custom_assert_failed 输出错误信息
+ */
+#define assert_non_null(pointer) \
+    do { \
+        if ((pointer) == NULL) { \
+            custom_assert_failed(__FILE__, __LINE__, __func__, \
+                "expected non-NULL pointer, but got NULL"); \
+        } \
+    } while (0)
