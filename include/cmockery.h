@@ -15,6 +15,9 @@
 #include <setjmp.h>
 #include <stddef.h>
 #include <stdarg.h>
+#include <math.h>
+#include <stdio.h> 
+
 
 /*
  * These headers or their equivalents should be included prior to including
@@ -1125,10 +1128,7 @@ void vprint_error(const char* const format, va_list args);
  * @param epsilon 允许的误差范围
  * @note 使用 assert_true 实现，若差值超过 epsilon 则断言失败
  */
-void assert_floats_equal(double expected, double actual, double epsilon) 
-{
-    assert_true(fabs(expected - actual) < epsilon);
-}
+void assert_floats_equal(double expected, double actual, double epsilon);
 
 /**
  * @brief 自定义断言失败处理函数
@@ -1139,17 +1139,7 @@ void assert_floats_equal(double expected, double actual, double epsilon)
  * @param ... 可变参数
  * @note 输出详细的断言失败信息并终止程序
  */
-void custom_assert_failed(const char *file, int line, const char *func, const char *format, ...) {
-    fprintf(stderr, "Assertion failed: %s:%d: %s: ", file, line, func);
-    
-    va_list args;
-    va_start(args, format);
-    vfprintf(stderr, format, args);
-    va_end(args);
-    
-    fprintf(stderr, "\n");
-    exit(EXIT_FAILURE);
-}
+void custom_assert_failed(const char *file, int line, const char *func, const char *format, ...);
 
 /**
  * @brief 断言指针为 NULL

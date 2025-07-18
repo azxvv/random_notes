@@ -1779,3 +1779,21 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
     fail_if_blocks_allocated(check_point, "run_tests");
     return (int)total_failed;
 }
+
+
+void custom_assert_failed(const char *file, int line, const char *func, const char *format, ...) {
+    fprintf(stderr, "Assertion failed: %s:%d: %s: ", file, line, func);
+    
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    
+    fprintf(stderr, "\n");
+    exit(EXIT_FAILURE);
+}
+
+void assert_floats_equal(double expected, double actual, double epsilon) 
+{
+    assert_true(fabs(expected - actual) < epsilon);
+}
