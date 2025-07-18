@@ -787,7 +787,7 @@ extern int global_expecting_assert;
 extern jmp_buf global_expect_assert_env;
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// ----------------------------- 内部函数声明（供宏调用） ----------------------------//
+// ------------------------------- 内部函数声明（供宏调用） ------------------------------//
 ////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -1074,3 +1074,41 @@ void vprint_message(const char* const format, va_list args);
  * @param args va_list 类型的参数列表。
  */
 void vprint_error(const char* const format, va_list args);
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// ------------------------------- cmockeryEx（enhance） ------------------------------//
+////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @def mock_ptr()
+ * @brief 显式获取指针类型的 Mock 返回值（解决 C++ 类型转换问题）。
+ * @details 对 mock() 的返回值进行显式指针转换，适用于获取指针类型的返回值。
+ * @return 转换后的 void* 类型指针。
+ * @note 仅在 C++ 环境下需要显式转换，C 环境中可直接使用 mock()。
+ */
+#define mock_ptr() ((void*)mock())
+
+/**
+ * @def mock_int()
+ * @brief 显式获取 int 类型的 Mock 返回值（解决 C++ 类型转换问题）。
+ * @details 对 mock() 的返回值进行显式 int 转换，适用于获取整数类型的返回值。
+ * @return 转换后的 int 类型值。
+ */
+#define mock_int() ((int)mock())
+
+/**
+ * @def mock_long()
+ * @brief 显式获取 long 类型的 Mock 返回值。
+ * @return 转换后的 long 类型值。
+ */
+#define mock_long() ((long)mock())
+
+/**
+ * @def mock_ptr_as(type)
+ * @brief 显式将 Mock 返回值转换为指定指针类型（如 char*、int* 等）。
+ * @param type 目标指针类型（如 char*）。
+ * @return 转换后的指定指针类型。
+ * @example mock_ptr_as(char*)  // 转换为字符指针
+ */
+#define mock_ptr_as(type) ((type)mock())
