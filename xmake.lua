@@ -8,8 +8,8 @@ set_targetdir("bin/$(plat)/$(arch)/$(mode)")
 add_rules("mode.debug", "mode.release")
 
 add_cxxflags("-std=c++17") 
-add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined")
-add_mxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined")
+add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing")
+add_mxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing")
 set_warnings("all", "error")
 
 if is_plat("windows") then
