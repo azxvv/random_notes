@@ -12,7 +12,8 @@ void assert_floats_equal(double expected, double actual, double epsilon)
 }
 
 // 计算器错误码
-typedef enum {
+typedef enum 
+{
     CALC_SUCCESS = 0,
     CALC_DIVIDE_BY_ZERO = -1
 } CalcError;
@@ -45,18 +46,22 @@ void calc_add(Calculator* calc, double value)
 }
 
 // 减法
-void calc_subtract(Calculator* calc, double value) {
+void calc_subtract(Calculator* calc, double value) 
+{
     calc->result -= value;
 }
 
 // 乘法
-void calc_multiply(Calculator* calc, double value) {
+void calc_multiply(Calculator* calc, double value) 
+{
     calc->result *= value;
 }
 
 // 除法
-CalcError calc_divide(Calculator* calc, double value) {
-    if (fabs(value) < 1e-9) {
+CalcError calc_divide(Calculator* calc, double value) 
+{
+    if (fabs(value) < 1e-9) 
+    {
         calc->error = CALC_DIVIDE_BY_ZERO;
         return CALC_DIVIDE_BY_ZERO;
     }
@@ -85,7 +90,8 @@ void test_add(void **state)
 }
 
 // 测试减法
-void test_subtract(void **state) {
+void test_subtract(void **state) 
+{
     Calculator* calc = calc_init();
     calc_subtract(calc, 3.0);
     assert_floats_equal(calc->result, -3.0, 1e-9);
@@ -93,7 +99,8 @@ void test_subtract(void **state) {
 }
 
 // 测试乘法
-void test_multiply(void **state) {
+void test_multiply(void **state) 
+{
     Calculator* calc = calc_init();
     calc_add(calc, 2.0);
     calc_multiply(calc, 4.0);
@@ -102,7 +109,8 @@ void test_multiply(void **state) {
 }
 
 // 测试除法
-void test_divide(void **state) {
+void test_divide(void **state) 
+{
     Calculator* calc = calc_init();
     calc_add(calc, 10.0);
     CalcError err = calc_divide(calc, 2.0);
@@ -112,7 +120,8 @@ void test_divide(void **state) {
 }
 
 // 测试除以零
-void test_divide_by_zero(void **state) {
+void test_divide_by_zero(void **state) 
+{
     Calculator* calc = calc_init();
     calc_add(calc, 5.0);
     CalcError err = calc_divide(calc, 0.0);
@@ -120,8 +129,10 @@ void test_divide_by_zero(void **state) {
     calc_free(calc);
 }
 
-int main(int argc, char **argv) {
-    const UnitTest tests[] = {
+int main(int argc, char **argv) 
+{
+    const UnitTest tests[] = 
+    {
         unit_test(test_initial_value),
         unit_test(test_add),
         unit_test(test_subtract),

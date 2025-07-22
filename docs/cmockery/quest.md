@@ -79,3 +79,122 @@ void test_divide(void** state)
     assert_int_equal(r, 1);
 }
 ```
+
+## 如何实现：运行测试用例
+
+```c++
+/**
+ * @brief 内部实现：运行单个测试函数（供 run_test() 宏调用）。
+ */
+int _run_test(
+    const char * const function_name, const UnitTestFunction Function,
+    void ** const state, const UnitTestFunctionType function_type,
+    const void* const heap_check_point);
+
+// _run_test
+if (setjmp(global_run_test_env) == 0) 
+{
+    Function(state ? state : &current_state);
+    // 检查是否有未被使用的预设值。若存在，打印错误并调用
+    fail_if_leftover_values(function_name);
+
+    /* If this is a setup function then ignore any allocated blocks
+        * only ensure they're deallocated on tear down. */
+    if (function_type != UNIT_TEST_FUNCTION_TYPE_SETUP) 
+    {
+        fail_if_blocks_allocated(check_point, function_name);
+    }
+
+    global_running_test = 0;
+
+    if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) 
+    {
+        print_message("%s: Test completed successfully.\n", function_name);
+    }
+    rc = 0;
+} 
+else 
+{
+    global_running_test = 0;
+    print_message("%s: Test failed.\n", function_name);
+}
+```
+
+首次_run_test函数执行时候，会执行到Function(state ? state : &current_state); 从而执行用户的测试用例里
+
+假设用户测试函数如下：
+```c++
+// example/cmockery/test_cmockery.cpp
+
+// 测试函数：验证 add(-1, 1) 是否等于 0
+void test_add_negative(void **state) 
+{
+    (void) state; // 未使用参数
+    assert_int_equal(add(-1, 1), 0);
+}
+```
+
+而assert_int_equal本身是一个宏函数定义：
+```c++
+/**
+ * @def assert_int_equal(a, b)
+ * @brief 断言两个整数相等，否则测试失败。
+ * @param a 第一个整数。
+ * @param b 第二个整数。
+ * @note 支持任意整数类型（会被转换为 LargestIntegralType 比较）。
+ */
+#define assert_int_equal(a, b) \
+    _assert_int_equal(cast_to_largest_integral_type(a), \
+                      cast_to_largest_integral_type(b), \
+                      __FILE__, __LINE__)
+
+void _assert_int_equal(
+        const LargestIntegralType a, const LargestIntegralType b,
+        const char * const file, const int line) 
+{
+    if (!values_equal_display_error(a, b)) 
+    {
+        _fail(file, line);
+    }
+}
+
+    /* Returns 1 if the specified values are equal.  If the values are not equal
+    * an error is displayed and 0 is returned. */
+    static int values_equal_display_error(const LargestIntegralType left,
+                                        const LargestIntegralType right) 
+    {
+        const int equal = left == right;
+        if (!equal) 
+        {
+            print_error(LargestIntegralTypePrintfFormat " != "
+                        LargestIntegralTypePrintfFormat "\n", left, right);
+        }
+
+        return equal;
+    }
+
+    void _fail(const char * const file, const int line) 
+    {
+        print_error("ERROR: " SOURCE_LOCATION_FORMAT " Failure!\n", file, line);
+        exit_test(1);
+    }
+
+// Exit the currently executing test.
+static void exit_test(const int quit_application) 
+{
+    if (global_running_test) 
+    {
+        longjmp(global_run_test_env, 1);
+    } 
+    else if (quit_application) 
+    {
+        exit(-1);
+    }
+}
+```
+
+调用链清晰：
+- _assert_int_equal
+- values_equal_display_error：实际的判等函数
+- _fail： 不想等则进入此函数，实际是调用exit_test函数
+- exit_test：实际是longjmp进行跳转

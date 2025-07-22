@@ -269,10 +269,14 @@ static const ExceptionCodeInfo exception_codes[] = {
 
 
 // Exit the currently executing test.
-static void exit_test(const int quit_application) {
-    if (global_running_test) {
+static void exit_test(const int quit_application) 
+{
+    if (global_running_test) 
+    {
         longjmp(global_run_test_env, 1);
-    } else if (quit_application) {
+    } 
+    else if (quit_application) 
+    {
         exit(-1);
     }
 }
@@ -304,7 +308,8 @@ static void set_source_location(
 
 
 // Create function results and expected parameter lists.
-void initialize_testing(const char *test_name) {
+void initialize_testing(const char *test_name) 
+{
     list_initialize(&global_function_result_map_head);
     initialize_source_location(&global_last_mock_value_location);
     list_initialize(&global_function_parameter_map_head);
@@ -312,22 +317,26 @@ void initialize_testing(const char *test_name) {
 }
 
 
-void fail_if_leftover_values(const char *test_name) {
+void fail_if_leftover_values(const char *test_name) 
+{
     int error_occurred = 0;
     remove_always_return_values(&global_function_result_map_head, 1);
     if (check_for_leftover_values(
             &global_function_result_map_head,
-            "%s() has remaining non-returned values.\n", 1)) {
+            "%s() has remaining non-returned values.\n", 1)) 
+    {
         error_occurred = 1;
     }
 
     remove_always_return_values(&global_function_parameter_map_head, 2);
     if (check_for_leftover_values(
             &global_function_parameter_map_head,
-            "%s parameter still has values that haven't been checked.\n", 2)) {
+            "%s parameter still has values that haven't been checked.\n", 2)) 
+    {
         error_occurred = 1;
     }
-    if (error_occurred) {
+    if (error_occurred) 
+    {
         exit_test(1);
     }
 }
@@ -343,7 +352,8 @@ void teardown_testing(const char *test_name) {
 }
 
 // Initialize a list node.
-static ListNode* list_initialize(ListNode * const node) {
+static ListNode* list_initialize(ListNode * const node) 
+{
     node->value = NULL;
     node->next = node;
     node->prev = node;
@@ -707,7 +717,8 @@ void _expect_check(
         const char* const file, const int line,
         const CheckParameterValue check_function,
         const LargestIntegralType check_data,
-        CheckParameterEvent * const event, const int count) {
+        CheckParameterEvent * const event, const int count) 
+{
     CheckParameterEvent * const check =
         event ? event : malloc(sizeof(*check));
     const char* symbols[] = {function, parameter};
@@ -723,9 +734,11 @@ void _expect_check(
 /* Returns 1 if the specified values are equal.  If the values are not equal
  * an error is displayed and 0 is returned. */
 static int values_equal_display_error(const LargestIntegralType left,
-                                      const LargestIntegralType right) {
+                                      const LargestIntegralType right) 
+{
     const int equal = left == right;
-    if (!equal) {
+    if (!equal) 
+    {
         print_error(LargestIntegralTypePrintfFormat " != "
                     LargestIntegralTypePrintfFormat "\n", left, right);
     }
@@ -1057,7 +1070,8 @@ static int check_string(const LargestIntegralType value,
 void _expect_string(
         const char* const function, const char* const parameter,
         const char* const file, const int line, const char* string,
-        const int count) {
+        const int count) 
+{
     declare_initialize_value_pointer_pointer(string_pointer, (char*)string);
     _expect_check(function, parameter, file, line, check_string,
                   string_pointer.value, NULL, count);
@@ -1244,8 +1258,10 @@ void _assert_false(const LargestIntegralType result,
 
 void _assert_int_equal(
         const LargestIntegralType a, const LargestIntegralType b,
-        const char * const file, const int line) {
-    if (!values_equal_display_error(a, b)) {
+        const char * const file, const int line) 
+{
+    if (!values_equal_display_error(a, b)) 
+    {
         _fail(file, line);
     }
 }
@@ -1339,9 +1355,11 @@ void _assert_not_in_set(const LargestIntegralType value,
 
 
 // Get the list of allocated blocks.
-static ListNode* get_allocated_blocks_list() {
+static ListNode* get_allocated_blocks_list() 
+{
     // If it initialized, initialize the list of allocated blocks.
-    if (!global_allocated_blocks.value) {
+    if (!global_allocated_blocks.value) 
+    {
         list_initialize(&global_allocated_blocks);
         global_allocated_blocks.value = (void*)1;
     }
@@ -1432,7 +1450,8 @@ void _test_free(void* const ptr, const char* file, const int line) {
 
 
 // Crudely checkpoint the current heap state.
-static const ListNode* check_point_allocated_blocks() {
+static const ListNode* check_point_allocated_blocks() 
+{
     return get_allocated_blocks_list()->prev;
 }
 
@@ -1492,7 +1511,8 @@ static void fail_if_blocks_allocated(const ListNode * const check_point,
 }
 
 
-void _fail(const char * const file, const int line) {
+void _fail(const char * const file, const int line) 
+{
     print_error("ERROR: " SOURCE_LOCATION_FORMAT " Failure!\n", file, line);
     exit_test(1);
 }
@@ -1582,7 +1602,8 @@ void print_error(const char* const format, ...) {
 int _run_test(
         const char * const function_name,  const UnitTestFunction Function,
         void ** const state, const UnitTestFunctionType function_type,
-        const void* const heap_check_point) {
+        const void* const heap_check_point) 
+{
     const ListNode * const check_point = heap_check_point ?
         heap_check_point : check_point_allocated_blocks();
     void *current_state = NULL;
@@ -1595,7 +1616,8 @@ int _run_test(
     handle_exceptions = 0;
 #endif // UNIT_TESTING_DEBUG
 
-    if (handle_exceptions) {
+    if (handle_exceptions) 
+    {
 #ifndef _WIN32
         unsigned int i;
         for (i = 0; i < ARRAY_LENGTH(exception_signals); i++) {
@@ -1608,37 +1630,46 @@ int _run_test(
 #endif // !_WIN32
     }
 
-    if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) {
+    if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) 
+    {
         print_message("%s: Starting test\n", function_name);
     }
     initialize_testing(function_name);
     global_running_test = 1;
-    if (setjmp(global_run_test_env) == 0) {
+    if (setjmp(global_run_test_env) == 0) 
+    {
         Function(state ? state : &current_state);
+        // 检查是否有未被使用的预设值。若存在，打印错误并调用
         fail_if_leftover_values(function_name);
 
         /* If this is a setup function then ignore any allocated blocks
          * only ensure they're deallocated on tear down. */
-        if (function_type != UNIT_TEST_FUNCTION_TYPE_SETUP) {
+        if (function_type != UNIT_TEST_FUNCTION_TYPE_SETUP) 
+        {
             fail_if_blocks_allocated(check_point, function_name);
         }
 
         global_running_test = 0;
 
-        if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) {
+        if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) 
+        {
             print_message("%s: Test completed successfully.\n", function_name);
         }
         rc = 0;
-    } else {
+    } 
+    else 
+    {
         global_running_test = 0;
         print_message("%s: Test failed.\n", function_name);
     }
     teardown_testing(function_name);
 
-    if (handle_exceptions) {
+    if (handle_exceptions) 
+    {
 #ifndef _WIN32
         unsigned int i;
-        for (i = 0; i < ARRAY_LENGTH(exception_signals); i++) {
+        for (i = 0; i < ARRAY_LENGTH(exception_signals); i++) 
+        {
             signal(exception_signals[i], default_signal_functions[i]);
         }
 #else // _WIN32
@@ -1653,7 +1684,8 @@ int _run_test(
 }
 
 
-int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
+int _run_tests(const UnitTest * const tests, const size_t number_of_tests) 
+{
     // Whether to execute the next test.
     int run_next_test = 1;
     // Whether the previous test failed.
@@ -1681,19 +1713,23 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
     // Make sure LargestIntegralType is at least the size of a pointer.
     assert_true(sizeof(LargestIntegralType) >= sizeof(void*));
 
-    while (current_test < number_of_tests) {
+    while (current_test < number_of_tests) 
+    {
         const ListNode *test_check_point = NULL;
         TestState *current_TestState;
         const UnitTest * const test = &tests[current_test++];
-        if (!test->function) {
+        if (!test->function) 
+        {
             continue;
         }
 
-        switch (test->function_type) {
+        switch (test->function_type) 
+        {
         case UNIT_TEST_FUNCTION_TYPE_TEST:
             run_next_test = 1;
             break;
-        case UNIT_TEST_FUNCTION_TYPE_SETUP: {
+        case UNIT_TEST_FUNCTION_TYPE_SETUP: 
+        {
             // Checkpoint the heap before the setup.
             current_TestState = &test_states[number_of_test_states++];
             current_TestState->check_point = check_point_allocated_blocks();
@@ -1719,10 +1755,12 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
             break;
         }
 
-        if (run_next_test) {
+        if (run_next_test) 
+        {
             int failed = _run_test(test->name, test->function, current_state,
                                    test->function_type, test_check_point);
-            if (failed) {
+            if (failed) 
+            {
                 failed_names[total_failed] = test->name;
             }
 
@@ -1756,14 +1794,18 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
         }
     }
 
-    if (total_failed) {
+    if (total_failed) 
+    {
         size_t i;
         print_error("%d out of %d tests failed!\n", total_failed,
                     tests_executed);
-        for (i = 0; i < total_failed; i++) {
+        for (i = 0; i < total_failed; i++) 
+        {
             print_error("    %s\n", failed_names[i]);
         }
-    } else {
+    } 
+    else 
+    {
         print_message("All %d tests passed\n", tests_executed);
     }
 
